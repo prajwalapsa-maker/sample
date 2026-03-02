@@ -16,20 +16,22 @@
   <!-- ── TWO ACTION BUTTONS ── -->
   <div style="text-align:center; padding: 32px 0 8px;">
     {% if can_view %}
-    <button class="waves-effect waves-light btn blue darken-3 pm-btn" id="btn-view" onclick="activatePanel('view')"
-            style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
+    <a href="{% url 'password_manager:cred_list' %}"
+       class="waves-effect waves-light btn blue darken-3 pm-btn" id="btn-view"
+       style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
       <i class="material-icons left">visibility</i>View Passwords
-    </button>
+    </a>
     {% endif %}
     {% if can_generate %}
-    <button class="waves-effect waves-light btn green darken-3 pm-btn" id="btn-generate" onclick="activatePanel('generate')"
+    <button class="waves-effect waves-light btn green darken-3 pm-btn" id="btn-generate"
+            onclick="activatePanel()"
             style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
       <i class="material-icons left">add_circle_outline</i>Generate Password
     </button>
     {% endif %}
   </div>
 
-  <!-- ── DYNAMIC PANEL (injected on click) ── -->
+  <!-- ── GENERATE PANEL (injected on click) ── -->
   <div id="pm-content-area"></div>
 
   <div id="celery">
@@ -39,7 +41,6 @@
   {% include 'widgets/keyboard_backspace.html' %}
 </div>
 
-<!-- view or export button javascript-->
 {% include 'widgets/view_export.html' %}
 
 <style>
@@ -54,45 +55,7 @@
 
 <script>
   const CSRF = "{{ csrf_token }}";
-  let activePanel = null;
-
-  function viewPanelHTML() {
-    return `
-    <div class="card" id="form_div">
-      <div class="card-content">
-        <br/>
-        <div class="row">
-          <div id="search" class="col s12">
-            <br>
-            <form id="view-search-form" action="" method="post" novalidate onsubmit="submitViewForm(event)">
-              <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF}">
-              <input type="hidden" name="mode" value="view">
-              <div class="layout-row row">
-                <div class="input-field col s12 m6">
-                  <em class="material-icons prefix">event_note</em>
-                  <input id="user_name" name="username" type="text">
-                  <label class="active" for="user_name">User Name</label>
-                </div>
-                <div class="input-field col s12 m6">
-                  <em class="material-icons prefix">event_note</em>
-                  <input id="password" name="password" type="text">
-                  <label for="password" class="active">Password</label>
-                </div>
-              </div>
-              <br><br>
-              <div class="right-align">
-                <button class="waves-effect waves-light btn blue darken-3" type="submit"
-                        style="border-radius:50px; padding:0 26px;">
-                  <i class="material-icons left">search</i>Search
-                </button>
-              </div>
-            </form>
-            <div id="view-results"></div>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }
+  let panelOpen = false;
 
   function generatePanelHTML() {
     return `
@@ -131,71 +94,26 @@
     </div>`;
   }
 
-  function activatePanel(panel) {
+  function activatePanel() {
     const area = document.getElementById('pm-content-area');
     const btnV = document.getElementById('btn-view');
     const btnG = document.getElementById('btn-generate');
 
-    if (activePanel === panel) {
+    if (panelOpen) {
+      // collapse
       area.innerHTML = '';
-      activePanel = null;
+      panelOpen = false;
       if (btnV) btnV.classList.remove('pm-inactive');
       if (btnG) btnG.classList.remove('pm-inactive');
       return;
     }
 
-    activePanel = panel;
-    if (btnV) btnV.classList.toggle('pm-inactive', panel !== 'view');
-    if (btnG) btnG.classList.toggle('pm-inactive', panel !== 'generate');
+    panelOpen = true;
+    if (btnV) btnV.classList.add('pm-inactive');
 
-    area.innerHTML = panel === 'view' ? viewPanelHTML() : generatePanelHTML();
+    area.innerHTML = generatePanelHTML();
     if (typeof M !== 'undefined') M.updateTextFields();
     area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  /* AJAX search — falls back to normal submit if backend not ready */
-  function submitViewForm(e) {
-    e.preventDefault();
-    const form = document.getElementById('view-search-form');
-    const results = document.getElementById('view-results');
-    results.innerHTML = `<div style="text-align:center;padding:24px">
-      <div class="preloader-wrapper small active">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left"><div class="circle"></div></div>
-          <div class="gap-patch"><div class="circle"></div></div>
-          <div class="circle-clipper right"><div class="circle"></div></div>
-        </div>
-      </div></div>`;
-
-    fetch(window.location.href, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(r => r.json())
-    .then(json => renderResults(json.creds))
-    .catch(() => form.submit());
-  }
-
-  function renderResults(creds) {
-    const results = document.getElementById('view-results');
-    if (!creds || !creds.length) {
-      results.innerHTML = `<p class="center-align grey-text" style="padding:24px 0">No credentials found.</p>`;
-      return;
-    }
-    const rows = creds.map(c => `<tr>
-      <td>${c.username}</td>
-      <td>${c.password_enc}</td>
-      <td>${c.owner}</td>
-      <td>${c.created_at}</td>
-    </tr>`).join('');
-    results.innerHTML = `<br>
-      <table class="highlight responsive-table">
-        <thead><tr>
-          <th>Username</th><th>Password</th><th>Owner</th><th>Created At</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
   }
 </script>
 
