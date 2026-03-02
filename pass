@@ -14,22 +14,24 @@
 <div class="left-panel wide">
 
   <!-- ── TWO ACTION BUTTONS ── -->
-  <div style="text-align:center; padding: 32px 0 8px;">
-    {% if can_view %}
-    <a href="{% url 'password_manager:cred_list' %}"
-       class="waves-effect waves-light btn blue darken-3 pm-btn" id="btn-view"
-       style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
-      <i class="material-icons left">visibility</i>View Passwords
-    </a>
-    {% endif %}
-    {% if can_generate %}
-    <button class="waves-effect waves-light btn green darken-3 pm-btn" id="btn-generate"
-            onclick="activatePanel()"
-            data-action="{% url 'password_manager:cred_new' %}"
-            style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
-      <i class="material-icons left">add_circle_outline</i>Generate Password
-    </button>
-    {% endif %}
+  <div class="card">
+    <div class="card-content" style="text-align:center;">
+      {% if can_view %}
+      <a href="{% url 'password_manager:cred_list' %}"
+         class="waves-effect waves-light btn blue darken-3 pm-btn" id="btn-view"
+         style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
+        <i class="material-icons left">visibility</i>View Passwords
+      </a>
+      {% endif %}
+      {% if can_generate %}
+      <button class="waves-effect waves-light btn green darken-3 pm-btn" id="btn-generate"
+              onclick="activatePanel()"
+              data-action="{% url 'password_manager:cred_new' %}"
+              style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
+        <i class="material-icons left">add_circle_outline</i>Generate Password
+      </button>
+      {% endif %}
+    </div>
   </div>
 
   <!-- ── GENERATE PANEL (injected on click) ── -->
