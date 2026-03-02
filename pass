@@ -12,118 +12,29 @@
 {% include 'widgets/processing.html' %}
 
 <div class="left-panel wide">
-  <div class="row" style="margin-bottom: 0;">
-    <div class="col s12">
 
-      <!-- Mode Selection Cards -->
-      <div class="row mode-selection-row" style="margin-top: 24px; margin-bottom: 0;">
-        <div class="col s12 m6">
-          <div class="mode-card waves-effect {% if not show_generate %}active-mode{% endif %}" 
-               id="view-mode-card" onclick="switchMode('view')" 
-               style="cursor:pointer; border-radius:12px; padding: 24px 20px; text-align:center; transition: all 0.3s ease; border: 2px solid {% if not show_generate %}#1565c0{% else %}#e0e0e0{% endif %}; background: {% if not show_generate %}#e3f2fd{% else %}#fafafa{% endif %};">
-            <i class="material-icons" style="font-size:40px; color: {% if not show_generate %}#1565c0{% else %}#9e9e9e{% endif %}; display:block; margin-bottom:10px;">visibility</i>
-            <span style="font-size:18px; font-weight:600; color: {% if not show_generate %}#1565c0{% else %}#616161{% endif %};">View Passwords</span>
-            <p style="font-size:13px; color:#757575; margin: 6px 0 0 0;">Search &amp; browse stored credentials</p>
-          </div>
-        </div>
-        <div class="col s12 m6">
-          <div class="mode-card waves-effect {% if show_generate %}active-mode{% endif %}" 
-               id="generate-mode-card" onclick="switchMode('generate')" 
-               style="cursor:pointer; border-radius:12px; padding: 24px 20px; text-align:center; transition: all 0.3s ease; border: 2px solid {% if show_generate %}#2e7d32{% else %}#e0e0e0{% endif %}; background: {% if show_generate %}#e8f5e9{% else %}#fafafa{% endif %};">
-            <i class="material-icons" style="font-size:40px; color: {% if show_generate %}#2e7d32{% else %}#9e9e9e{% endif %}; display:block; margin-bottom:10px;">add_circle</i>
-            <span style="font-size:18px; font-weight:600; color: {% if show_generate %}#2e7d32{% else %}#616161{% endif %};">Generate Password</span>
-            <p style="font-size:13px; color:#757575; margin: 6px 0 0 0;">Create &amp; store a new credential</p>
-          </div>
-        </div>
-      </div>
+  <!-- ── TWO ACTION BUTTONS ── -->
+  <div style="text-align:center; padding: 32px 0 8px;">
+    {% if can_view %}
+    <button class="waves-effect waves-light btn blue darken-3 pm-btn" id="btn-view" onclick="activatePanel('view')"
+            style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
+      <i class="material-icons left">visibility</i>View Passwords
+    </button>
+    {% endif %}
+    {% if can_generate %}
+    <button class="waves-effect waves-light btn green darken-3 pm-btn" id="btn-generate" onclick="activatePanel('generate')"
+            style="border-radius:50px; margin:8px; padding:0 28px; font-weight:600; letter-spacing:0.4px;">
+      <i class="material-icons left">add_circle_outline</i>Generate Password
+    </button>
+    {% endif %}
+  </div>
 
-      <!-- Divider -->
-      <div class="divider" style="margin: 16px 0;"></div>
+  <!-- ── DYNAMIC PANEL (injected on click) ── -->
+  <div id="pm-content-area"></div>
 
-      <!-- VIEW PANEL -->
-      <div id="view-panel" style="display: {% if show_generate %}none{% else %}block{% endif %};">
-        <div class="card" id="form_div" style="border-radius:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <div class="card-content">
-            <span class="card-title" style="color:#1565c0;">
-              <i class="material-icons left">search</i> Search Credentials
-            </span>
-            <br/>
-            <form id="view-search-form" action="" method="post" novalidate>
-              {% csrf_token %}
-              <input type="hidden" name="mode" value="view">
-              <div class="row">
-                <div class="input-field col s12 m6">
-                  <i class="material-icons prefix" style="color:#1565c0;">person</i>
-                  <input id="view_user_name" name="username" type="text" class="validate">
-                  <label for="view_user_name">User Name</label>
-                </div>
-                <div class="input-field col s12 m6">
-                  <i class="material-icons prefix" style="color:#1565c0;">lock</i>
-                  <input id="view_password" name="password" type="text" class="validate">
-                  <label for="view_password">Password</label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col s12 right-align">
-                  {% if can_view %}
-                  <button class="waves-effect waves-light btn blue darken-3" id="view_button" 
-                          value="{% url 'password_manager:cred_list' %}" type="submit"
-                          style="border-radius:25px; padding: 0 28px; letter-spacing:0.5px;">
-                    <i class="material-icons left">visibility</i>View Results
-                  </button>
-                  {% endif %}
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- GENERATE PANEL -->
-      <div id="generate-panel" style="display: {% if show_generate %}block{% else %}none{% endif %};">
-        <div class="card" style="border-radius:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <div class="card-content">
-            <span class="card-title" style="color:#2e7d32;">
-              <i class="material-icons left">add_circle</i> Generate New Password
-            </span>
-            <br/>
-            <form id="generate-form" action="" method="post" novalidate>
-              {% csrf_token %}
-              <input type="hidden" name="mode" value="generate">
-              <div class="layout-row row">
-                <div class="input-field col s12 m6">
-                  <i class="material-icons prefix" style="color:#2e7d32;">event_note</i>
-                  <input id="gen_user_name" name="username" type="text" class="validate">
-                  <label class="active" for="gen_user_name">User Name</label>
-                </div>
-                <div class="input-field col s12 m6">
-                  <i class="material-icons prefix" style="color:#2e7d32;">vpn_key</i>
-                  <input id="gen_password" name="password" type="text" class="validate">
-                  <label for="gen_password">Password</label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col s12 right-align">
-                  {% if can_generate %}
-                  <button class="waves-effect waves-light btn green darken-3" type="submit"
-                          style="border-radius:25px; padding: 0 28px; letter-spacing:0.5px;">
-                    <i class="material-icons left">save</i>Generate &amp; Save
-                  </button>
-                  {% endif %}
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Celery background jobs -->
-      <div id="celery">
-        <br>
-        {% include 'widgets/celery_background_jobs.html' %}
-      </div>
-
-    </div>
+  <div id="celery">
+    <br>
+    {% include 'widgets/celery_background_jobs.html' %}
   </div>
   {% include 'widgets/keyboard_backspace.html' %}
 </div>
@@ -132,56 +43,159 @@
 {% include 'widgets/view_export.html' %}
 
 <style>
-  .mode-card {
-    user-select: none;
-    margin-bottom: 0;
-  }
-  .mode-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
-  }
-  .mode-card.active-mode {
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15) !important;
+  .pm-btn { transition: opacity 0.2s, transform 0.18s; }
+  .pm-btn.pm-inactive { opacity: 0.45; transform: scale(0.97); }
+  #pm-content-area .card { animation: pm-in 0.28s cubic-bezier(.4,0,.2,1) both; }
+  @keyframes pm-in {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
   }
 </style>
 
 <script>
-  function switchMode(mode) {
-    const viewCard = document.getElementById('view-mode-card');
-    const generateCard = document.getElementById('generate-mode-card');
-    const viewPanel = document.getElementById('view-panel');
-    const generatePanel = document.getElementById('generate-panel');
+  const CSRF = "{{ csrf_token }}";
+  let activePanel = null;
 
-    if (mode === 'view') {
-      // Activate view
-      viewPanel.style.display = 'block';
-      generatePanel.style.display = 'none';
+  function viewPanelHTML() {
+    return `
+    <div class="card" id="form_div">
+      <div class="card-content">
+        <br/>
+        <div class="row">
+          <div id="search" class="col s12">
+            <br>
+            <form id="view-search-form" action="" method="post" novalidate onsubmit="submitViewForm(event)">
+              <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF}">
+              <input type="hidden" name="mode" value="view">
+              <div class="layout-row row">
+                <div class="input-field col s12 m6">
+                  <em class="material-icons prefix">event_note</em>
+                  <input id="user_name" name="username" type="text">
+                  <label class="active" for="user_name">User Name</label>
+                </div>
+                <div class="input-field col s12 m6">
+                  <em class="material-icons prefix">event_note</em>
+                  <input id="password" name="password" type="text">
+                  <label for="password" class="active">Password</label>
+                </div>
+              </div>
+              <br><br>
+              <div class="right-align">
+                <button class="waves-effect waves-light btn blue darken-3" type="submit"
+                        style="border-radius:50px; padding:0 26px;">
+                  <i class="material-icons left">search</i>Search
+                </button>
+              </div>
+            </form>
+            <div id="view-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
 
-      viewCard.style.border = '2px solid #1565c0';
-      viewCard.style.background = '#e3f2fd';
-      viewCard.querySelector('.material-icons').style.color = '#1565c0';
-      viewCard.querySelector('span').style.color = '#1565c0';
+  function generatePanelHTML() {
+    return `
+    <div class="card" id="form_div">
+      <div class="card-content">
+        <br/>
+        <div class="row">
+          <div id="search" class="col s12">
+            <br>
+            <form id="generate-form" action="" method="post" novalidate>
+              <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF}">
+              <input type="hidden" name="mode" value="generate">
+              <div class="layout-row row">
+                <div class="input-field col s12 m6">
+                  <em class="material-icons prefix">event_note</em>
+                  <input id="user_name" name="username" type="text">
+                  <label class="active" for="user_name">User Name</label>
+                </div>
+                <div class="input-field col s12 m6">
+                  <em class="material-icons prefix">event_note</em>
+                  <input id="password" name="password" type="text">
+                  <label for="password" class="active">Password</label>
+                </div>
+              </div>
+              <br><br>
+              <div class="right-align">
+                <button class="waves-effect waves-light btn green darken-3" type="submit"
+                        style="border-radius:50px; padding:0 26px;">
+                  <i class="material-icons left">save</i>Generate &amp; Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
 
-      generateCard.style.border = '2px solid #e0e0e0';
-      generateCard.style.background = '#fafafa';
-      generateCard.querySelector('.material-icons').style.color = '#9e9e9e';
-      generateCard.querySelector('span').style.color = '#616161';
+  function activatePanel(panel) {
+    const area = document.getElementById('pm-content-area');
+    const btnV = document.getElementById('btn-view');
+    const btnG = document.getElementById('btn-generate');
 
-    } else {
-      // Activate generate
-      viewPanel.style.display = 'none';
-      generatePanel.style.display = 'block';
-
-      generateCard.style.border = '2px solid #2e7d32';
-      generateCard.style.background = '#e8f5e9';
-      generateCard.querySelector('.material-icons').style.color = '#2e7d32';
-      generateCard.querySelector('span').style.color = '#2e7d32';
-
-      viewCard.style.border = '2px solid #e0e0e0';
-      viewCard.style.background = '#fafafa';
-      viewCard.querySelector('.material-icons').style.color = '#9e9e9e';
-      viewCard.querySelector('span').style.color = '#616161';
+    if (activePanel === panel) {
+      area.innerHTML = '';
+      activePanel = null;
+      if (btnV) btnV.classList.remove('pm-inactive');
+      if (btnG) btnG.classList.remove('pm-inactive');
+      return;
     }
+
+    activePanel = panel;
+    if (btnV) btnV.classList.toggle('pm-inactive', panel !== 'view');
+    if (btnG) btnG.classList.toggle('pm-inactive', panel !== 'generate');
+
+    area.innerHTML = panel === 'view' ? viewPanelHTML() : generatePanelHTML();
+    if (typeof M !== 'undefined') M.updateTextFields();
+    area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* AJAX search — falls back to normal submit if backend not ready */
+  function submitViewForm(e) {
+    e.preventDefault();
+    const form = document.getElementById('view-search-form');
+    const results = document.getElementById('view-results');
+    results.innerHTML = `<div style="text-align:center;padding:24px">
+      <div class="preloader-wrapper small active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left"><div class="circle"></div></div>
+          <div class="gap-patch"><div class="circle"></div></div>
+          <div class="circle-clipper right"><div class="circle"></div></div>
+        </div>
+      </div></div>`;
+
+    fetch(window.location.href, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(json => renderResults(json.creds))
+    .catch(() => form.submit());
+  }
+
+  function renderResults(creds) {
+    const results = document.getElementById('view-results');
+    if (!creds || !creds.length) {
+      results.innerHTML = `<p class="center-align grey-text" style="padding:24px 0">No credentials found.</p>`;
+      return;
+    }
+    const rows = creds.map(c => `<tr>
+      <td>${c.username}</td>
+      <td>${c.password_enc}</td>
+      <td>${c.owner}</td>
+      <td>${c.created_at}</td>
+    </tr>`).join('');
+    results.innerHTML = `<br>
+      <table class="highlight responsive-table">
+        <thead><tr>
+          <th>Username</th><th>Password</th><th>Owner</th><th>Created At</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
   }
 </script>
 
