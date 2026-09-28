@@ -1,244 +1,210 @@
-create project details form the details given below for my resume,
-
-[![One|Console](/static/images/logo.png)](http://oneconsole/)  
-<br/>
-[![Build Status](/static/images/passing.svg)](http://oneconsole/)  
-<br/>
-Oneconsole is a single platform which unifies different Applications together providing single entry point to all of them,
-Two versions are available now,
-
-  | Name | Description |
-  | ------ | ------ |
-  | [Homologation](http://honeconsole/) | Beta Version |
-  | [Production](http://oneconsole/) | Stable version |
-  | [Development](http://doneconsole/) | Development |
-
-
-
-### Apps
-
-Below are the list of apps included in oneconsole
-
-  | Name | Description |
-  | ------ | ------ |
-  | [Nagee] | A Report generation Application |
-  | [Nagel] | A Data integration Software |
-  | [Shuttle] | Client Data Integration |
-  | [Analytics] | Analytical Platform |
-  | [Applications] | Peripheral |
-  | [Infrastructure] | Monitor |
-  | [Support] | Support Assistant |
-  | [Management] | Management App |
-  | [Documents] | View/Upload Shared Documents |
-
-
-
-### Technology used
-
-OneConsole uses a number of open source projects to work properly:
-
-| Name | Description |
-| ------ | ------ |
-| [Celery] | Distributed Task Queue |
-| [Python] | High-level programming language |
-| [git] | Distributed version control system |
-| [PostgreSQL] | Advanced Open Source Relational Database |
-| [Django Material] | Material design for Django Forms and Admin (Template driven) |
-| [Materialize css] | A modern responsive front-end framework based on Material Design |
-| [Redis] | In-memory data structure store, used as a database, cache and message broker |
-| [Django] | Web Framework which makes it easier to build better Web apps more quickly and with less code |
-
-
-
-### Installation
-
-Install virtual environment  [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) for Dependency Management
-
-```bash
-pip install virtualenv
-```
-Create and Activate a virtual environment
-
-```bash
-
-virtualenv oneconsole_env
-
-source oneconsole_env/bin/activate
-
-```
-
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install dependencies in requires.txt
-
-```bash
-pip install --upgrade -r requires/requires.txt
-```
-Migrate to reflect the changes made inside models.py file to database
-
-```bash
-python manage.py makemigrations
-
-python manage.py migrate
-```
-
-Run the unittests if required
-```bash
-python manage.py test
-```
-
-Run the server
-
-```bash
-python manage.py runserver dafslx90:2020
-```
-> Note: Here Host is fixed but the Port can be changed.
-
-Verify the deployment by navigating to your server address in your preferred browser.
-
-```sh
-dafslx90:2020
-```
-
-
-Host : dafslx90
-Port: 2020
-
-> Note: For Development Host is dafslx90
-> For Homologation Host is hafslx90
-> and for Production Host is pafslx90
-
-### Run the Redis server
-
-> Note: Redis should be running on background.
-
-Activate the environment
-
-```bash
-source oneconsole_env/bin/activate
-```
-
-Activate Redis server
-
-```bash
-redis-server
-```
-> Do not close the terminal as it closed redis server.
-
-### Run the Celery server
-
-> Note: For the celery tasks to perform Asynchronous tasks,
- its should be running on background.
-
-
-Activate the environment
-
-```bash
-source oneconsole_env/bin/activate
-```
-
-Move into the project
-
-```bash
-cd oneconsole
-```
-
-Run the celery server
-
-```bash
-celery -A oneconsole.celery worker -l DEBUG -E
-```
-
-> Do not close the terminal as it closed celery server.
-
-### Create a new App
-
-To create a new App
-
-```sh
-python manage.py startapp new_app_name
-```
-
-Add a new view named `index` inside `new_app_name/views.py`
-
-```sh
-from django.http import HttpResponse
-
-def index(request):
-    return HttpResponse("Hi customize this view_name, contents as per the requirement.")
-```
-
-Create a file  `new_app_name/urls.py`   
-
-```sh
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('', views.index, name='index'),
-]
-```
-Include `new_app_name/urls.py`  in the root  `project_name/urls.py` file ( ie: near `settings.py` file)
-
-```sh
-from django.contrib import admin
-from django.urls import include, path
-
-urlpatterns = [
-    path('new_app_name/', include('new_app_name.urls')),
-    path('admin/', admin.site.urls),
-]
-```
-
-Run the server
-
-```bash
-python manage.py runserver dafslx90:2020
-```
-
-### Cartography
-
-<img class="materialboxed" width="650" src="/static/images/Cartography.png">
-
-
-
-### Github
-
-Github repos of dependencies.
-Instructions on how to use them with our application are available in the README.md file of that repo.
-
-| Name | Repo |
-| ------ | ------ |
-| Django-Celery | [https://github.com/celery/django-celery][django-celery] |
-| Django-Material | [https://github.com/viewflow/django-material][django-material] |
-
-
-
-License
-----
-
-Proprietary
-
-
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen)
-
-   [Nagee]: <http://oneconsole/auriga/tubes>
-   [Nagel]: <http://oneconsole/spaceport/events>
-   [Shuttle]: <http://oneconsole/shuttle/search>
-   [Infrastructure]: <http://oneconsole/infra/supervisor>
-   [Applications]: <http://oneconsole/sunsystems/invoice/search>
-   [Analytics]: <http://oneconsole/analytics/asset>
-   [Support]: <http://oneconsole/support/sequence>
-   [Management]: <http://oneconsole/management/active_sessions>
-   [Documents]: <http://oneconsole/documents/document_upload>
-
-   [Python]: <https://www.python.org/>
-   [Django]: <https://www.djangoproject.com/>
-   [Materialize css]: <https://materializecss.com/>
-   [Django Material]: <http://docs.viewflow.io/material_forms.html>
-   [PostgreSQL]: <https://www.postgresql.org/>
-   [Redis]: <https://redis.io/>
-   [Celery]: <http://www.celeryproject.org/>
-   [git]: <https://git-scm.com/>
-
-   [django-celery]: <https://github.com/celery/django-celery>
-   [django-material]: <https://github.com/viewflow/django-material>
+import setuptools
+from setuptools import setup, Command
+from setuptools.command.test import test as _test
+from setuptools.command.build_py import build_py as _build_py
+import os
+import sys
+
+
+SETUP_DIRNAME = os.path.dirname(__file__)
+if SETUP_DIRNAME != '':
+    os.chdir(SETUP_DIRNAME)
+SETUP_DIRNAME = os.path.abspath(SETUP_DIRNAME)
+APPLICATION_VERSION_HARDCODED = os.path.join(
+    SETUP_DIRNAME,
+    'spaceport',
+    '_version.py'
+)
+INSTALL_VERSION_TEMPLATE = '''\
+__version__ = {full_version!r}\
+'''
+
+
+class hardcode_version(Command):
+    description = 'Write application\'s hardcoded version file'
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        if not os.path.exists(APPLICATION_VERSION_HARDCODED):
+            if (
+                getattr(
+                    self.distribution,
+                    'application_version_hardcoded_path',
+                    None
+                ) is None
+            ):
+                print('This command is not meant to be called on it\'s own')
+                sys.exit(1)
+            open(
+                self.distribution.application_version_hardcoded_path,
+                mode='w'
+            ).write(
+                INSTALL_VERSION_TEMPLATE.format(
+                    full_version=self.distribution.metadata.version
+                )
+            )
+
+
+class build_py(_build_py):
+    def run(self):
+        _build_py.run(self)
+        self.distribution.application_version_hardcoded_path = os.path.join(
+            self.build_lib,
+            'spaceport',
+            '_version.py'
+        )
+        self.run_command('hardcode_version')
+
+
+class PyTest(_test):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to pytest")]
+
+    def initialize_options(self):
+        _test.initialize_options(self)
+        self.pytest_args = ''
+
+    def run_tests(self):
+        import shlex
+        import pytest
+        errno = pytest.main(shlex.split(self.pytest_args))
+        sys.exit(errno)
+
+
+setup(
+    name='spaceport',
+    version_format='{tag}.{commitcount}+{gitsha}',
+    setup_requires=[
+        'setuptools-git-version'
+    ],
+    cmdclass={
+        'build_py': build_py,
+        'hardcode_version': hardcode_version,
+        'test': PyTest
+    },
+    tests_require = ['pytest'],
+    packages=[
+        'spaceport',
+        'spaceport.config',
+        'spaceport.controllers',
+        'spaceport.core',
+        'spaceport.jobs',
+        'spaceport.model',
+        'spaceport.templates',
+        'spaceport.testtools',
+        'spaceport.controllers.admin',
+        'spaceport.controllers.json',
+        'spaceport.controllers.viewer',
+        'spaceport.controllers.admin.backup',
+        'spaceport.controllers.admin.bu',
+        'spaceport.controllers.admin.builder',
+        'spaceport.controllers.admin.bupermission',
+        'spaceport.controllers.admin.clientprofile',
+        'spaceport.controllers.admin.descriptor',
+        'spaceport.controllers.admin.error',
+        'spaceport.controllers.admin.group',
+        'spaceport.controllers.admin.interpreter',
+        'spaceport.controllers.admin.jobs',
+        'spaceport.controllers.admin.layeredbuilder',
+        'spaceport.controllers.admin.permission',
+        'spaceport.controllers.admin.server',
+        'spaceport.controllers.admin.user',
+        'spaceport.controllers.admin.webconsole',
+        'spaceport.controllers.json.bu',
+        'spaceport.controllers.json.builder',
+        'spaceport.controllers.json.descriptor',
+        'spaceport.controllers.json.filter',
+        'spaceport.controllers.json.interpreter',
+        'spaceport.controllers.json.layer',
+        'spaceport.controllers.json.server',
+        'spaceport.controllers.viewer.events',
+        'spaceport.controllers.viewer.reprocess',
+        'spaceport.core.builder',
+        'spaceport.core.cache',
+        'spaceport.core.casters',
+        'spaceport.core.context',
+        'spaceport.core.indexing',
+        'spaceport.core.interpreter',
+        'spaceport.core.loader',
+        'spaceport.core.lookup',
+        'spaceport.core.manager',
+        'spaceport.core.pluginbase',
+        'spaceport.core.plugins',
+        'spaceport.core.processor',
+        'spaceport.core.report',
+        'spaceport.core.context.plugins',
+        'spaceport.core.context.plugins.filenameevaluator',
+        'spaceport.core.context.plugins.firstlineevaluator',
+        'spaceport.core.context.plugins.readfirstpacket',
+        'spaceport.core.pluginbase.itemfilter',
+        'spaceport.core.pluginbase.itemprocessor',
+        'spaceport.core.pluginbase.itemfilter.baseaccountfilter',
+        'spaceport.core.pluginbase.itemfilter.baseanalysisfilter',
+        'spaceport.core.pluginbase.itemfilter.basefilter',
+        'spaceport.core.pluginbase.itemprocessor.baseprocessor',
+        'spaceport.templates.admin',
+        'spaceport.templates.viewer',
+        'spaceport.templates.admin.builder',
+        'spaceport.templates.admin.error',
+        'spaceport.templates.admin.permission'
+    ],
+    install_requires = [
+        "PasteDeploy >= 1.5.2",
+        "SQLAlchemy >= 0.5.6",  # Fixme: Obsolete
+        "TGScheduler >= 1.7.0",
+        "TurboGears >= 1.1.3",  # todo: update to a more recent version
+        "CherryPy >= 2.3.0",  # used both by TurboGears and us.
+        "marrow.mailer >= 4.0.2",
+        "TGExpandingFormWidget >= 0.1.3",
+        "webtest > 1, < 2",
+        "pysolr >= 3.7.0",
+        "pyssc >= 3.1.39",  # AFS Software
+        "sunview >= 4.42",
+        "calendaring >= 0.5",  # AFS Software
+        "docutils >= 0.14",
+        "lxml >= 4.2.3",
+        "pki >= 0.3.4",  # AFS Software
+        "psycopg2",
+        "pyDes >= 2.0.1",
+        "threadpool >= 1.3.2",  # Fixme: Obsolete
+        "pyf.transport >= 2.0.1",  # Legacy AFS Software
+        "pyf.splitter >= 3.1",  # Legacy AFS Software
+        "pyjon.descriptors >= 1.7.7.1",  # Legacy AFS Software
+        "pyjon.utils >= 0.8",  # Legacy AFS Software
+        "textile >= 3.0.3",
+        "filestorage >= 0.3",  # AFS Software
+        "psutil >= 5.4.6",
+        "requests >= 2.19.1",
+        "chiefworker>=0.8.1",
+        "pyodbc == 3.0.7"
+    ],
+    include_package_data=True,
+    entry_points = {
+        'console_scripts': [
+            'start-spaceport = spaceport.commands:start',
+            'bootstrap-spaceport = spaceport.commands:bootstrap',
+            'spaceport-service = spaceport.service:main',
+            'spaceport-create-index = spaceport.commands:create_index'
+        ],
+        'spaceport.context.evaluator': [
+            'first_line_eval = spaceport.core.context.plugins.firstlineevaluator:FirstLineEvaluator',
+            'filename_eval = spaceport.core.context.plugins.filenameevaluator:FileNameEvaluator',
+            'read_first_packet = spaceport.core.context.plugins.readfirstpacket:ReadFirstPacket',
+            'remote_filename_eval = spaceport.core.context.plugins.filenameevaluator:RemoteFileNameEvaluator'
+        ],
+        'spaceport.scheduled': [
+            'start_ws = spaceport.core.utils:start_ws',
+            'stop_ws = spaceport.core.utils:stop_ws',
+            'send_events_report = spaceport.jobs:events_error_report',
+            'send_gl_events_report = spaceport.jobs:gl_events_error_report',
+            'send_interface_events_report = spaceport.jobs:events_interface_report',
+            'send_failure_events_report = spaceport.jobs:events_failure_interface_report',
+            'send_server_test = spaceport.jobs:server_test',
+            'server_maintenence = spaceport.jobs:server_maintainence',
+        ]
+    },
+)
