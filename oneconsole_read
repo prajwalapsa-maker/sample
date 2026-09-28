@@ -1,0 +1,244 @@
+create project details form the details given below for my resume,
+
+[![One|Console](/static/images/logo.png)](http://oneconsole/)  
+<br/>
+[![Build Status](/static/images/passing.svg)](http://oneconsole/)  
+<br/>
+Oneconsole is a single platform which unifies different Applications together providing single entry point to all of them,
+Two versions are available now,
+
+  | Name | Description |
+  | ------ | ------ |
+  | [Homologation](http://honeconsole/) | Beta Version |
+  | [Production](http://oneconsole/) | Stable version |
+  | [Development](http://doneconsole/) | Development |
+
+
+
+### Apps
+
+Below are the list of apps included in oneconsole
+
+  | Name | Description |
+  | ------ | ------ |
+  | [Nagee] | A Report generation Application |
+  | [Nagel] | A Data integration Software |
+  | [Shuttle] | Client Data Integration |
+  | [Analytics] | Analytical Platform |
+  | [Applications] | Peripheral |
+  | [Infrastructure] | Monitor |
+  | [Support] | Support Assistant |
+  | [Management] | Management App |
+  | [Documents] | View/Upload Shared Documents |
+
+
+
+### Technology used
+
+OneConsole uses a number of open source projects to work properly:
+
+| Name | Description |
+| ------ | ------ |
+| [Celery] | Distributed Task Queue |
+| [Python] | High-level programming language |
+| [git] | Distributed version control system |
+| [PostgreSQL] | Advanced Open Source Relational Database |
+| [Django Material] | Material design for Django Forms and Admin (Template driven) |
+| [Materialize css] | A modern responsive front-end framework based on Material Design |
+| [Redis] | In-memory data structure store, used as a database, cache and message broker |
+| [Django] | Web Framework which makes it easier to build better Web apps more quickly and with less code |
+
+
+
+### Installation
+
+Install virtual environment  [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) for Dependency Management
+
+```bash
+pip install virtualenv
+```
+Create and Activate a virtual environment
+
+```bash
+
+virtualenv oneconsole_env
+
+source oneconsole_env/bin/activate
+
+```
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install dependencies in requires.txt
+
+```bash
+pip install --upgrade -r requires/requires.txt
+```
+Migrate to reflect the changes made inside models.py file to database
+
+```bash
+python manage.py makemigrations
+
+python manage.py migrate
+```
+
+Run the unittests if required
+```bash
+python manage.py test
+```
+
+Run the server
+
+```bash
+python manage.py runserver dafslx90:2020
+```
+> Note: Here Host is fixed but the Port can be changed.
+
+Verify the deployment by navigating to your server address in your preferred browser.
+
+```sh
+dafslx90:2020
+```
+
+
+Host : dafslx90
+Port: 2020
+
+> Note: For Development Host is dafslx90
+> For Homologation Host is hafslx90
+> and for Production Host is pafslx90
+
+### Run the Redis server
+
+> Note: Redis should be running on background.
+
+Activate the environment
+
+```bash
+source oneconsole_env/bin/activate
+```
+
+Activate Redis server
+
+```bash
+redis-server
+```
+> Do not close the terminal as it closed redis server.
+
+### Run the Celery server
+
+> Note: For the celery tasks to perform Asynchronous tasks,
+ its should be running on background.
+
+
+Activate the environment
+
+```bash
+source oneconsole_env/bin/activate
+```
+
+Move into the project
+
+```bash
+cd oneconsole
+```
+
+Run the celery server
+
+```bash
+celery -A oneconsole.celery worker -l DEBUG -E
+```
+
+> Do not close the terminal as it closed celery server.
+
+### Create a new App
+
+To create a new App
+
+```sh
+python manage.py startapp new_app_name
+```
+
+Add a new view named `index` inside `new_app_name/views.py`
+
+```sh
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Hi customize this view_name, contents as per the requirement.")
+```
+
+Create a file  `new_app_name/urls.py`   
+
+```sh
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+```
+Include `new_app_name/urls.py`  in the root  `project_name/urls.py` file ( ie: near `settings.py` file)
+
+```sh
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path('new_app_name/', include('new_app_name.urls')),
+    path('admin/', admin.site.urls),
+]
+```
+
+Run the server
+
+```bash
+python manage.py runserver dafslx90:2020
+```
+
+### Cartography
+
+<img class="materialboxed" width="650" src="/static/images/Cartography.png">
+
+
+
+### Github
+
+Github repos of dependencies.
+Instructions on how to use them with our application are available in the README.md file of that repo.
+
+| Name | Repo |
+| ------ | ------ |
+| Django-Celery | [https://github.com/celery/django-celery][django-celery] |
+| Django-Material | [https://github.com/viewflow/django-material][django-material] |
+
+
+
+License
+----
+
+Proprietary
+
+
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen)
+
+   [Nagee]: <http://oneconsole/auriga/tubes>
+   [Nagel]: <http://oneconsole/spaceport/events>
+   [Shuttle]: <http://oneconsole/shuttle/search>
+   [Infrastructure]: <http://oneconsole/infra/supervisor>
+   [Applications]: <http://oneconsole/sunsystems/invoice/search>
+   [Analytics]: <http://oneconsole/analytics/asset>
+   [Support]: <http://oneconsole/support/sequence>
+   [Management]: <http://oneconsole/management/active_sessions>
+   [Documents]: <http://oneconsole/documents/document_upload>
+
+   [Python]: <https://www.python.org/>
+   [Django]: <https://www.djangoproject.com/>
+   [Materialize css]: <https://materializecss.com/>
+   [Django Material]: <http://docs.viewflow.io/material_forms.html>
+   [PostgreSQL]: <https://www.postgresql.org/>
+   [Redis]: <https://redis.io/>
+   [Celery]: <http://www.celeryproject.org/>
+   [git]: <https://git-scm.com/>
+
+   [django-celery]: <https://github.com/celery/django-celery>
+   [django-material]: <https://github.com/viewflow/django-material>
